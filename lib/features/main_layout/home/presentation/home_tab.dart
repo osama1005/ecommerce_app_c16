@@ -105,7 +105,8 @@ class _HomeTabState extends State<HomeTab> {
                       return const ProductCard(
                         title: "Nike Air Jordon",
                         description:
-                            "Nike is a multinational corporation that designs, develops, and sells athletic footwear ,apparel, and accessories",
+                        "Nike is a multinational corporation that designs,"
+                            " develops, and sells athletic footwear ,apparel, and accessories",
                         rating: 4.5,
                         price: 1100,
                         priceBeforeDiscound: 1500,

@@ -1,5 +1,7 @@
 import 'package:ecommerce_app/Data/data_source/categoriesOnlineDataSource.dart';
 import 'package:ecommerce_app/api/Api_manager.dart';
+import 'package:ecommerce_app/api/execute_api.dart';
+import 'package:ecommerce_app/domain/api_result.dart';
 import 'package:ecommerce_app/domain/model/Category.dart';
 import 'package:injectable/injectable.dart';
 
@@ -7,11 +9,12 @@ import 'package:injectable/injectable.dart';
 class CategoriesOnlineDataSourceImpl implements CategoriesOnlineDataSource{
   ApiManager apiManager;
   CategoriesOnlineDataSourceImpl(this.apiManager);
-
   @override
-  Future<List<Category>>getCategories()async{
-    var response = await apiManager.getCategories();
-    return response.data?.map((dto)=>dto.toCategory()).toList() ??[];
-
+  Future<Result<List<Category>>> getCategories()async{
+    return executeApi(()async{
+      var response =  await apiManager.getCategories();
+      var data =  response.data?.map((catDto) => catDto.toCategory(),).toList() ?? [];
+      return data;
+    },);
   }
 }

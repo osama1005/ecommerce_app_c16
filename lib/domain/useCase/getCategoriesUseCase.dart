@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/domain/api_result.dart';
 import 'package:ecommerce_app/domain/model/Category.dart';
 import 'package:ecommerce_app/domain/repos/CategoriesRepo.dart';
 import 'package:injectable/injectable.dart';
@@ -8,7 +9,7 @@ class GetCategoriesUseCase{
 
   GetCategoriesUseCase(this.categoriesRepo);
 
-  Future<List<Category>> getCategories(){
+  Future<Result<List<Category>>> getCategories(){
     return categoriesRepo.getCategories();
   }
 
