@@ -1,5 +1,5 @@
-import 'package:ecommerce_app/api/model/categories_dto.dart';
-import 'package:ecommerce_app/api/model/pagination_dto.dart';
+import 'package:ecommerce_app/api/model/response/categories_response/categories_dto.dart';
+import 'package:ecommerce_app/api/model/response/categories_response/pagination_dto.dart';
 
 class CategoriesResponse {
   CategoriesResponse({

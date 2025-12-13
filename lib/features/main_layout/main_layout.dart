@@ -23,6 +23,7 @@ class _MainLayoutState extends State<MainLayout> {
     const FavouriteScreen(),
     const ProfileTab(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,31 +33,29 @@ class _MainLayoutState extends State<MainLayout> {
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.1,
-          child: BottomNavigationBar(
-            currentIndex: currentIndex,
-            onTap: (value) => changeSelectedIndex(value),
-            backgroundColor: ColorManager.primary,
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: ColorManager.primary,
-            unselectedItemColor: ColorManager.white,
-            showSelectedLabels: false, // Hide selected item labels
-            showUnselectedLabels: false, // Hide unselected item labels
-            items: [
-              // Build BottomNavigationBarItem widgets for each tab
-              CustomBottomNavBarItem(IconsAssets.icHome, "Home"),
-              CustomBottomNavBarItem(IconsAssets.icCategory, "Category"),
-              CustomBottomNavBarItem(IconsAssets.icWithList, "WishList"),
-              CustomBottomNavBarItem(IconsAssets.icProfile, "Profile"),
-            ],
-          ),
+        // تم إزالة SizedBox الذي كان يحد من الارتفاع (height: MediaQuery.of(context).size.height * 0.1,)
+        child: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: (value) => changeSelectedIndex(value),
+          backgroundColor: ColorManager.primary,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: ColorManager.primary,
+          unselectedItemColor: ColorManager.white,
+          showSelectedLabels: false, // Hide selected item labels
+          showUnselectedLabels: false, // Hide unselected item labels
+          items: [
+            // Build BottomNavigationBarItem widgets for each tab
+            CustomBottomNavBarItem(IconsAssets.icHome, "Home"),
+            CustomBottomNavBarItem(IconsAssets.icCategory, "Category"),
+            CustomBottomNavBarItem(IconsAssets.icWithList, "WishList"),
+            CustomBottomNavBarItem(IconsAssets.icProfile, "Profile"),
+          ],
         ),
       ),
     );
   }
 
-  changeSelectedIndex(int selectedIndex) {
+  void changeSelectedIndex(int selectedIndex) {
     setState(() {
       currentIndex = selectedIndex;
     });
@@ -68,18 +67,19 @@ class CustomBottomNavBarItem extends BottomNavigationBarItem {
   String title;
   CustomBottomNavBarItem(this.iconPath, this.title)
       : super(
-          label: title,
-          icon: ImageIcon(
-            AssetImage(iconPath), // Inactive icon image
-            color: ColorManager.white, // Inactive icon color
-          ),
-          activeIcon: CircleAvatar(
-            backgroundColor: ColorManager.white, // Background of active icon
-            child: ImageIcon(
-              AssetImage(iconPath),
-              color: ColorManager
-                  .primary, // Active icon imagecolor: ColorManager.primary, // Active icon color
-            ),
-          ),
-        );
+    label: title,
+    icon: ImageIcon(
+      AssetImage(iconPath), // Inactive icon image
+      color: ColorManager.white, // Inactive icon color
+    ),
+    activeIcon: CircleAvatar(
+      // تم إضافة radius لتقليل حجم الـ CircleAvatar ومنع الـ Overflow
+      radius: 12,
+      backgroundColor: ColorManager.white, // Background of active icon
+      child: ImageIcon(
+        AssetImage(iconPath),
+        color: ColorManager.primary, // Active icon color
+      ),
+    ),
+  );
 }

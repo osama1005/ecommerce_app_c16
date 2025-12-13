@@ -84,7 +84,7 @@ class CustomProductWidget extends StatelessWidget {
                   // ),
                   ClipRRect(
                     borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(14.r)),
+                    BorderRadius.vertical(top: Radius.circular(14.r)),
                     child: Image.asset(
                       image,
                       fit: BoxFit.cover,
