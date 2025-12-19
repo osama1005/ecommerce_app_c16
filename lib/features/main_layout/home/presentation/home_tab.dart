@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'package:ecommerce_app/core/common/component_state.dart';
 import 'package:ecommerce_app/core/di/di.dart';
 import 'package:ecommerce_app/core/widget/product_card.dart';
-import 'package:ecommerce_app/features/main_layout/home/presentation/home_view_model.dart';
+import 'package:ecommerce_app/features/main_layout/home/presentation/home_cubit.dart';
+import 'package:ecommerce_app/features/main_layout/home/presentation/home_state.dart';
 import 'package:ecommerce_app/features/main_layout/home/presentation/widgets/custom_brand_widget.dart';
 import 'package:ecommerce_app/features/main_layout/home/presentation/widgets/custom_category_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/resources/assets_manager.dart';
@@ -19,7 +22,9 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  HomeViewModel homeViewModel = getIt.get<HomeViewModel>();
+
+  HomeCubit homeCubit = getIt.get<HomeCubit>();
+
   int _currentIndex = 0;
   late Timer _timer;
 
@@ -32,22 +37,11 @@ class _HomeTabState extends State<HomeTab> {
   @override
   void initState() {
     super.initState();
-    _startImageSwitching();
-    homeViewModel.getCategories();
-    homeViewModel.getBrands();
-  }
-
-  void _startImageSwitching() {
-    _timer = Timer.periodic(const Duration(milliseconds: 2500), (Timer timer) {
-      setState(() {
-        _currentIndex = (_currentIndex + 1) % adsImages.length;
-      });
-    });
+    homeCubit.loadHomeState();
   }
 
   @override
   void dispose() {
-    _timer.cancel();
     super.dispose();
   }
 
@@ -58,67 +52,137 @@ class _HomeTabState extends State<HomeTab> {
         children: [
           CustomAdsWidget(
             adsImages: adsImages,
-            currentIndex: _currentIndex,
-            timer: _timer,
           ),
-          Column(
-            children: [
-              CustomSectionBar(sectionNname: 'Categories', function: () {}),
-              SizedBox(
-                height: 270.h,
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return const CustomCategoryWidget();
-                  },
-                  itemCount: 20,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                ),
-              ),
-              SizedBox(height: 12.h),
-              CustomSectionBar(sectionNname: 'Brands', function: () {}),
-              SizedBox(
-                height: 270.h,
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return const CustomBrandWidget();
-                  },
-                  itemCount: 20,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                ),
-              ),
-              CustomSectionBar(
-                sectionNname: 'Most Selling Products',
-                function: () {},
-              ),
-              SizedBox(
-                child: SizedBox(
-                  height: 360.h,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return const ProductCard(
-                        title: "Nike Air Jordon",
-                        description:
-                        "Nike is a multinational corporation that designs,"
-                            " develops, and sells athletic footwear ,apparel, and accessories",
-                        rating: 4.5,
-                        price: 1100,
-                        priceBeforeDiscound: 1500,
-                        image: ImageAssets.categoryHomeImage,
-                      );
+          BlocProvider(
+            create: (context) => homeCubit,
+            child: Column(
+              children: [
+                CustomSectionBar(sectionNname: 'Categories', function: () {}),
+                SizedBox(
+                  height: 270.h,
+                  child: BlocBuilder<HomeCubit, HomeState>(
+                    buildWhen: (previous, current){
+                       return previous.categoriesState != current.categoriesState;
+                       },
+                    builder: (context, state) {
+                      var categoriesState = state.categoriesState;
+                      switch (categoriesState) {
+                        case InitialState():
+                        case LoadingState():
+                          {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        case ErrorState():
+                          {
+                            return Text(categoriesState.exception.toString());
+                          }
+                        case SuccessState():
+                          {
+                            var categories = categoriesState.data;
+                            return GridView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return  CustomCategoryWidget(
+                                  category: categories[index],
+                                );
+                              },
+                              itemCount: categories.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                              ),
+                            );
+                          }
+                      }
                     },
-                    itemCount: 20,
                   ),
                 ),
-              ),
-              SizedBox(height: 12.h),
-            ],
+                SizedBox(height: 12.h),
+                CustomSectionBar(sectionNname: 'Brands', function: () {}),
+                SizedBox(
+                  height: 270.h,
+                  child: BlocBuilder<HomeCubit,HomeState>(
+                    buildWhen: (previous, current){
+                      return previous.brandState != current.brandState;
+                    },
+                    builder: (context,state){
+                      var brandState = state.brandState;
+                      switch(brandState){
+                        case InitialState():
+                        case LoadingState():{
+                          return const Center(child: CircularProgressIndicator(),);
+                      }
+                        case ErrorState():
+                          {
+                            return Text(brandState.exception.toString());
+                          }
+                        case SuccessState():{
+                          var brands = brandState.data;
+                          return  GridView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                      return  CustomBrandWidget(
+                        brand: brands[index],
+                      );
+                      },
+                      itemCount: brands.length,
+                      gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      ),
+                      );
+                        }
+                      }
+
+                    },
+
+                  ),
+                ),
+                CustomSectionBar(
+                  sectionNname: 'Most Selling Products',
+                  function: () {},
+                ),
+                SizedBox(
+                  child: SizedBox(
+                    height: 360.h,
+                    child: BlocBuilder<HomeCubit,HomeState>(
+                      buildWhen: (previos,current){
+                        return previos.productState != current.productState;
+                      },
+                      builder: (context,state){
+                        var productState = state.productState;
+                        switch(productState){
+                        case InitialState():
+                        case LoadingState():{
+                        return const Center(child: CircularProgressIndicator(),);
+                        }
+                        case ErrorState():
+                        {
+                        return Text(productState.exception.toString());
+                        }
+                        case SuccessState():{
+                          var product = productState.data;
+                          return  ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                        return  ProductCard(
+                        product: product[index],
+                        );
+                        },
+                        itemCount: product.length,
+                        );
+                        }
+
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12.h),
+              ],
+            ),
           )
         ],
       ),

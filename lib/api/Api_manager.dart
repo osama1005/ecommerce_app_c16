@@ -2,14 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:ecommerce_app/api/model/response/BrandResponse.dart';
 import 'package:ecommerce_app/api/model/response/categories_response/CategoriesResponse.dart';
 import 'package:ecommerce_app/api/model/response/login_response.dart';
+import 'package:ecommerce_app/api/model/response/product_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 @singleton
-class ApiManager{
+class ApiManager {
   final _dio = Dio();
 
-  ApiManager(){
+  ApiManager() {
     _dio.options.baseUrl = "https://ecommerce.routemisr.com/api/";
     _dio.interceptors.add(PrettyDioLogger(
         requestHeader: true,
@@ -18,27 +19,33 @@ class ApiManager{
         responseHeader: false,
         error: true,
         compact: true,
-        maxWidth: 90
-    ));
-
+        maxWidth: 90));
   }
 
-  Future<CategoriesResponse> getCategories()async{
+  Future<CategoriesResponse> getCategories() async {
     var response = await _dio.get("v1/categories");
     var categoriesResponse = CategoriesResponse.fromJson(response.data);
     return categoriesResponse;
   }
-  Future<BrandResponse> getBrands()async{
+
+  Future<BrandResponse> getBrands() async {
     var response = await _dio.get("v1/brands");
     var brandsResponse = BrandResponse.fromJson(response.data);
     return brandsResponse;
   }
 
-  Future<LoginResponse> login(String email , String password)async{
-
-    final response = await _dio.post('v1/auth/signin',
+  Future<LoginResponse> login(String email, String password) async {
+    final response = await _dio.post(
+      'v1/auth/signin',
       data: {"email": email, "password": password},
     );
     return LoginResponse.fromJson(response.data);
+  }
+
+  Future<ProductResponse> getProduct() async {
+    var response =
+        await _dio.get("https://ecommerce.routemisr.com/api/v1/products");
+    var productResponse = ProductResponse.fromJson(response.data);
+    return productResponse;
   }
 }
