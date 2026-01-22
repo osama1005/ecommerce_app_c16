@@ -5,6 +5,9 @@ abstract class CategoriesOnlineDataSource{
 
   Future<Result<List<Category>>> getCategories();
 
+  Future<Result<List<Category>>> getSubCategories({required String id});
+
+
 }
 
 

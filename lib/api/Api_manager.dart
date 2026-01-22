@@ -48,4 +48,10 @@ class ApiManager {
     var productResponse = ProductResponse.fromJson(response.data);
     return productResponse;
   }
+
+  Future<CategoriesResponse> getSubCategories(String id ) async {
+    var response = await _dio.get("https://ecommerce.routemisr.com/api/v1/categories/$id/subcategories");
+    var categoriesResponse = CategoriesResponse.fromJson(response.data);
+    return categoriesResponse;
+  }
 }
