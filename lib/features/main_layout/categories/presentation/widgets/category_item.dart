@@ -38,15 +38,19 @@ class CategoryItem extends StatelessWidget {
               ),
             ),
             // wrap the text with expanded to avoid overflow error
-            Expanded(
+            Flexible(
                 child: Padding(
               padding: const EdgeInsets.symmetric(
                   vertical: AppPadding.p16, horizontal: AppPadding.p8),
-              child: Text(
-                title,
-                textAlign: TextAlign.start,
-                style: getMediumStyle(
-                    color: ColorManager.primary, fontSize: FontSize.s14),
+              child: FittedBox(
+                child: Text(
+                  title.replaceAll(' ', '\n'),
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: getMediumStyle(
+                      color: ColorManager.primary, fontSize: FontSize.s14),
+                ),
               ),
             ))
           ],

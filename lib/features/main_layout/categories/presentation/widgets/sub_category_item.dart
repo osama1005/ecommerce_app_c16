@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/core/resources/color_manager.dart';
 import 'package:ecommerce_app/core/resources/styles_manager.dart';
 import 'package:ecommerce_app/core/resources/values_manager.dart';
@@ -15,30 +16,39 @@ class SubCategoryItem extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.pushNamed(context, Routes.productsScreenRoute),
       overlayColor: WidgetStateProperty.all(Colors.transparent),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppSize.s12),
-                  border: Border.all(color: ColorManager.primary, width: 2)),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(AppSize.s10),
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.cover,
+      child:
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: Container(
+
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(AppSize.s12),
+                      border: Border.all(color: ColorManager.primary, width: 2)),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppSize.s10),
+                    child: CachedNetworkImage(
+                      imageUrl: image,
+                      errorWidget: (context, url, error) =>
+                      const Icon(Icons.image_not_supported_rounded),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-          Text(
-            title,
-            style: getRegularStyle(color: ColorManager.primary),
-          )
-        ],
-      ),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: getRegularStyle(color: ColorManager.primary),
+            )
+          ],
+        )
     );
   }
 }

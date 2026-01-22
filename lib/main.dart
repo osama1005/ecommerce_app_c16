@@ -1,10 +1,12 @@
+import 'package:ecommerce_app/core/cache_manager/CacheManager.dart';
 import 'package:ecommerce_app/core/di/di.dart';
 import 'package:ecommerce_app/core/routes_manager/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/routes_manager/route_generator.dart';
 
-void main() {
+void main()async {
+  await CacheManager.inti();
 configureDependencies();
 runApp(const MainApp());
 }
