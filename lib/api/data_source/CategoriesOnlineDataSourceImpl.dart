@@ -17,4 +17,13 @@ class CategoriesOnlineDataSourceImpl implements CategoriesOnlineDataSource{
       return data;
     },);
   }
+
+  Future<Result<List<Category>>> getSubCategories({required String id})async{
+    return executeApi(()async{
+      var response =  await apiManager.getSubCategories(id);
+      var data =  response.data?.map((catDto) => catDto.toCategory(),).toList() ?? [];
+      return data;
+    },);
+  }
+  
 }
