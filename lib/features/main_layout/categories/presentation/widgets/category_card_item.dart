@@ -24,11 +24,14 @@ class CategoryCardItem extends StatelessWidget {
         child: Stack(
           children: [
             // Background image for the category
-            Image.asset(
+            Image.network(
               image,
               fit: BoxFit.cover,
               width: double.infinity,
+              errorBuilder: (_, __, ___) =>
+              const Icon(Icons.image_not_supported_rounded),
             ),
+
             // Overlay with category title and button
             Positioned.fill(
                 child: Padding(
