@@ -1,10 +1,11 @@
+import 'package:ecommerce_app/core/provider/auth_provider.dart';
 import 'package:ecommerce_app/core/resources/assets_manager.dart';
 import 'package:ecommerce_app/core/resources/color_manager.dart';
-import 'package:ecommerce_app/core/widget/home_screen_app_bar.dart';
 import 'package:ecommerce_app/features/main_layout/categories/presentation/categories_tab.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/presentation/favourite_screen.dart';
 import 'package:ecommerce_app/features/main_layout/profile_tab/presentation/profile_tab.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'home/presentation/home_tab.dart';
 
@@ -26,8 +27,11 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AuthProvider>(context);
     return Scaffold(
-      appBar: const HomeScreenAppBar(),
+      appBar: AppBar(
+        title: Text(user.currentUser?.name ?? 'guest'),
+      ),
       extendBody: false,
       body: tabs[currentIndex],
       bottomNavigationBar: ClipRRect(
