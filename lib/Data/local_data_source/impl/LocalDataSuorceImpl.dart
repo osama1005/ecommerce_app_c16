@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/Data/local_data_source/LocalDataSource.dart';
+import 'package:ecommerce_app/Data/local_data_source/contract/LocalDataSource.dart';
 import 'package:ecommerce_app/core/cache_manager/CacheManager.dart';
 import 'package:ecommerce_app/domain/model/Category.dart';
 import 'package:injectable/injectable.dart';
